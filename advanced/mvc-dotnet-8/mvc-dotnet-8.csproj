@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>mvc_dotnet_8</RootNamespace>
+  </PropertyGroup>
+
+  <Target Name="BeforeBuildTasks" BeforeTargets="BeforeBuild">
+    <!-- Install the LibMan CLI dotnet tool w/ e.g. `dotnet tool install -g Microsoft.Web.LibraryManager.Cli` -->
+    <Exec Command="libman restore" />
+  </Target>
+
+  <Target Name="AfterCleanTasks" BeforeTargets="AfterClean">
+    <Exec Command="libman clean" />
+    <RemoveDir Directories="./wwwroot/lib/" />
+  </Target>
+
+</Project>
