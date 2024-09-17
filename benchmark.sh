@@ -64,7 +64,7 @@ simple_dotnet8_times=()
 simple_dotnet9_times=()
 advanced_dotnet8_times=()
 advanced_dotnet9_times=()
-build_command="dotnet build -v q"
+build_command="dotnet build -v q -bl"
 
 pushd simple
 pushd mvc-dotnet-8
