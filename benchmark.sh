@@ -42,6 +42,10 @@ pushd mvc-dotnet-9
 dotnet clean -v q && dotnet build -v q
 popd
 
+pushd mvc-dotnet-10
+dotnet clean -v q && dotnet build -v q
+popd
+
 popd
 
 pushd advanced
@@ -54,6 +58,10 @@ pushd mvc-dotnet-9
 dotnet clean -v q && dotnet build -v q
 popd
 
+pushd mvc-dotnet-10
+dotnet clean -v q && dotnet build -v q
+popd
+
 popd
 
 # Run benchmarks
@@ -62,12 +70,15 @@ echo "Running benchmarks..."
 
 simple_dotnet8_times=()
 simple_dotnet9_times=()
+simple_dotnet10_times=()
 advanced_dotnet8_times=()
 advanced_dotnet9_times=()
+advanced_dotnet10_times=()
 build_command="dotnet build -v q -bl"
 
 pushd simple
 pushd mvc-dotnet-8
+dotnet8_version=$(dotnet --version)
 
 for i in {1..5}; do
     saved_timing=`mktemp`
@@ -78,12 +89,24 @@ done
 
 popd
 pushd mvc-dotnet-9
+dotnet9_version=$(dotnet --version)
 
 for i in {1..5}; do
     saved_timing=`mktemp`
     gnutime --format="%e" -o "$saved_timing" $build_command
     dotnet_time=$(cat "$saved_timing")
     simple_dotnet9_times+=($dotnet_time)
+done
+
+popd
+pushd mvc-dotnet-10
+dotnet10_version=$(dotnet --version)
+
+for i in {1..5}; do
+    saved_timing=`mktemp`
+    gnutime --format="%e" -o "$saved_timing" $build_command
+    dotnet_time=$(cat "$saved_timing")
+    simple_dotnet10_times+=($dotnet_time)
 done
 
 popd
@@ -110,6 +133,16 @@ for i in {1..5}; do
 done
 
 popd
+pushd mvc-dotnet-10
+
+for i in {1..5}; do
+    saved_timing=`mktemp`
+    gnutime --format="%e" -o "$saved_timing" $build_command
+    dotnet_time=$(cat "$saved_timing")
+    advanced_dotnet10_times+=($dotnet_time)
+done
+
+popd
 popd
 
 # Output results
@@ -118,11 +151,15 @@ bold=$(tput bold)
 normal=$(tput sgr0)
 
 echo "Benchmark results:"
-echo -ne "${normal}Simple MVC .NET 8 (avg. seconds):\t${bold}"
+echo -ne "${normal}Simple MVC .NET ${dotnet8_version} (avg. seconds):\t\t\t\t${bold}"
 print_average "${simple_dotnet8_times[@]}"
-echo -ne "${normal}Simple MVC .NET 9 (avg. seconds):\t${bold}"
+echo -ne "${normal}Simple MVC .NET ${dotnet9_version} (avg. seconds):\t\t${bold}"
 print_average "${simple_dotnet9_times[@]}"
-echo -ne "${normal}Advanced MVC .NET 8 (avg. seconds):\t${bold}"
+echo -ne "${normal}Simple MVC .NET ${dotnet10_version} (avg. seconds):\t${bold}"
+print_average "${simple_dotnet10_times[@]}"
+echo -ne "${normal}Advanced MVC .NET ${dotnet8_version} (avg. seconds):\t\t\t${bold}"
 print_average "${advanced_dotnet8_times[@]}"
-echo -ne "${normal}Advanced MVC .NET 9 (avg. seconds):\t${bold}"
+echo -ne "${normal}Advanced MVC .NET ${dotnet9_version} (avg. seconds):\t\t${bold}"
 print_average "${advanced_dotnet9_times[@]}"
+echo -ne "${normal}Advanced MVC .NET ${dotnet10_version} (avg. seconds):\t${bold}"
+print_average "${advanced_dotnet10_times[@]}"
